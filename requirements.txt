@@ -1,0 +1,10 @@
+# requirements file
+# note which revision of python, for example 3.9.6
+# in this file, insert all the pip install needs, include revision
+
+
+python-dotenv==1.0.0
+
+llama-index==0.10.27
+llama-index-llms-openai==0.1.15
+llama-index-embeddings-openai==0.1.7
