@@ -64,4 +64,4 @@ Open a Pull Request.
 
 
 Contact
-For any questions or inquiries, please contact [Patrick Attankurugu] at [patricka.azuma@gmail.com]
+For any questions or inquiries, please email me at [patricka.azuma@gmail.com]
