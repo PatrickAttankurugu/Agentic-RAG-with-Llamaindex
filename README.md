@@ -40,7 +40,7 @@ This repository is part of a learning journey that includes:
 To get started with this project, follow these steps:
 1. **Clone the repository**:
    ```bash
-   git clone https://github.com/your-username/Agentic-RAG-with-LlamaIndex.git
+   git clone https://github.com/PatrickAttankurugu/Agentic-RAG-with-LlamaIndex.git
    cd Agentic-RAG-with-LlamaIndex
 
 2. Install dependencies
