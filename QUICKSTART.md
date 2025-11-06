@@ -35,7 +35,7 @@ python -m venv venv
 source venv/bin/activate  # On Windows: venv\Scripts\activate
 
 # 2. Install dependencies
-pip install -r requirements.txt
+pip install -r requirements-new.txt
 
 # 3. Set up environment
 cp .env.example .env
@@ -58,7 +58,7 @@ streamlit run app.py
 3. **Use the App**
    - Browser opens at http://localhost:8501
    - Select 2-3 PDF documents from sidebar
-   - Click "🚀 Initialize Agent"
+   - Click "Initialize Agent"
    - Start asking questions!
 
 ## Example Queries
@@ -75,7 +75,7 @@ Try these questions:
 - **Solution**: Check `.env` file has `GOOGLE_API_KEY=your_actual_key`
 
 **Problem**: Missing dependencies
-- **Solution**: Run `pip install -r requirements.txt`
+- **Solution**: Run `pip install -r requirements-new.txt`
 
 **Problem**: Port already in use
 - **Solution**: `streamlit run app.py --server.port 8502`
