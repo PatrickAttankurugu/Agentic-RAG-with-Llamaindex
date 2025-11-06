@@ -130,3 +130,80 @@ def get_doc_tools(
     )
 
     return vector_query_tool, summary_tool
+
+
+def get_router_query_engine(file_path: str, llm=None, embed_model=None):
+    """Get router query engine for a document.
+
+    This creates a router that can intelligently choose between:
+    - Summary mode: For high-level summarization questions
+    - Vector mode: For specific detail retrieval
+
+    Args:
+        file_path (str): Path to the PDF file
+        llm: Optional LLM instance (will use default if None)
+        embed_model: Optional embedding model (will use default if None)
+
+    Returns:
+        RouterQueryEngine: A router query engine
+    """
+    from llama_index.core import SimpleDirectoryReader
+    from llama_index.core.node_parser import SentenceSplitter
+    from llama_index.core import SummaryIndex, VectorStoreIndex
+    from llama_index.core.tools import QueryEngineTool
+    from llama_index.core.query_engine.router_query_engine import RouterQueryEngine
+    from llama_index.core.selectors import LLMSingleSelector
+    from llama_index.core import Settings
+    from pathlib import Path
+
+    # Use provided models or defaults
+    if llm:
+        Settings.llm = llm
+    if embed_model:
+        Settings.embed_model = embed_model
+
+    # Load documents
+    documents = SimpleDirectoryReader(input_files=[file_path]).load_data()
+    splitter = SentenceSplitter(chunk_size=1024)
+    nodes = splitter.get_nodes_from_documents(documents)
+
+    # Create indices
+    summary_index = SummaryIndex(nodes)
+    vector_index = VectorStoreIndex(nodes)
+
+    # Create query engines
+    summary_query_engine = summary_index.as_query_engine(
+        response_mode="tree_summarize",
+        use_async=True,
+    )
+    vector_query_engine = vector_index.as_query_engine()
+
+    # Get document name
+    doc_name = Path(file_path).stem
+
+    # Create tools
+    summary_tool = QueryEngineTool.from_defaults(
+        query_engine=summary_query_engine,
+        description=(
+            f"Useful for summarization questions related to {doc_name}"
+        ),
+    )
+
+    vector_tool = QueryEngineTool.from_defaults(
+        query_engine=vector_query_engine,
+        description=(
+            f"Useful for retrieving specific context from the {doc_name} document."
+        ),
+    )
+
+    # Create router query engine
+    query_engine = RouterQueryEngine(
+        selector=LLMSingleSelector.from_defaults(),
+        query_engine_tools=[
+            summary_tool,
+            vector_tool,
+        ],
+        verbose=True
+    )
+
+    return query_engine
