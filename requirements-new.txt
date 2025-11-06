@@ -1,0 +1,61 @@
+# Agentic RAG - Industry Standard Requirements
+# Python 3.9+ required
+
+# Core dependencies
+python-dotenv==1.0.0
+
+# LlamaIndex core
+llama-index==0.10.27
+llama-index-core==0.10.27
+
+# Google Gemini integration
+llama-index-llms-gemini==0.1.8
+google-generativeai==0.3.2
+
+# HuggingFace embeddings (open source)
+llama-index-embeddings-huggingface==0.1.4
+sentence-transformers==2.3.1
+
+# Vector stores
+chromadb==0.4.22  # For persistent vector storage
+llama-index-vector-stores-chroma==0.1.4
+
+# Configuration management
+pydantic==2.5.3
+pydantic-settings==2.1.0
+
+# Logging
+loguru==0.7.2
+
+# Web framework
+streamlit==1.31.0
+
+# Document processing
+pypdf==4.0.1
+
+# Async support
+nest-asyncio==1.6.0
+
+# Testing
+pytest==7.4.3
+pytest-asyncio==0.21.1
+pytest-cov==4.1.0
+
+# Code quality
+black==23.12.1
+isort==5.13.2
+flake8==7.0.0
+mypy==1.8.0
+
+# Development
+ipython==8.19.0
+jupyter==1.0.0
+
+# Optional: Additional LLM providers
+# openai==1.7.0
+# anthropic==0.8.0
+
+# Optional: Observability
+# opentelemetry-api==1.22.0
+# opentelemetry-sdk==1.22.0
+# prometheus-client==0.19.0
