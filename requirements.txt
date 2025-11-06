@@ -1,10 +1,24 @@
 # requirements file
-# note which revision of python, for example 3.9.6
-# in this file, insert all the pip install needs, include revision
+# Python 3.9+ required
 
-
+# Core dependencies
 python-dotenv==1.0.0
 
+# LlamaIndex core
 llama-index==0.10.27
-llama-index-llms-openai==0.1.15
-llama-index-embeddings-openai==0.1.7
+llama-index-core==0.10.27
+
+# Google Gemini integration
+llama-index-llms-gemini==0.1.8
+google-generativeai==0.3.2
+
+# HuggingFace embeddings (open source)
+llama-index-embeddings-huggingface==0.1.4
+sentence-transformers==2.3.1
+
+# Streamlit for frontend
+streamlit==1.31.0
+
+# Additional utilities
+pypdf==4.0.1
+nest-asyncio==1.6.0
