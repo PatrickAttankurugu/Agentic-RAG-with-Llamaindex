@@ -49,7 +49,7 @@ You should see `(venv)` in your terminal prompt, indicating the virtual environm
 
 ```bash
 pip install --upgrade pip
-pip install -r requirements.txt
+pip install -r requirements-new.txt
 ```
 
 This will install:
@@ -91,7 +91,7 @@ python rag_backend.py
 You should see:
 ```
 Initializing RAG Backend...
-✓ Backend initialized successfully!
+Backend initialized successfully!
 Available documents: X
   - document1.pdf
   - document2.pdf
@@ -115,12 +115,12 @@ The application will:
 
 Once the app is running:
 
-1. **Check API Status**: In the sidebar, verify "🔑 API Key: Configured" is green
+1. **Check API Status**: In the sidebar, verify "API Key: Configured" is shown
 2. **Select Documents**: Choose 2-3 PDF files from the document list
 3. **Choose Agent Mode**:
    - Select "Advanced" if you have 5+ documents
    - Select "Simple" for fewer documents
-4. **Initialize**: Click "🚀 Initialize Agent"
+4. **Initialize**: Click "Initialize Agent"
 5. **Start Asking**: Type a question like "Summarize the main findings of these papers"
 
 ## Using Your Own Documents
@@ -152,7 +152,7 @@ To analyze your own PDF files:
 source venv/bin/activate  # or venv\Scripts\activate on Windows
 
 # Reinstall requirements
-pip install -r requirements.txt
+pip install -r requirements-new.txt
 ```
 
 ### Issue: "Error loading model" or Embedding errors
@@ -268,11 +268,11 @@ If you encounter issues:
 ## What's Included
 
 This project comes with:
-- ✅ 12 research papers as sample documents
-- ✅ Pre-configured Streamlit UI
-- ✅ Advanced and Simple agent modes
-- ✅ Router engine for single documents
-- ✅ Complete documentation
-- ✅ Jupyter notebooks for learning
+- 12 research papers as sample documents
+- Pre-configured Streamlit UI
+- Advanced and Simple agent modes
+- Router engine for single documents
+- Complete documentation
+- Jupyter notebooks for learning
 
-Happy researching! 🚀
+Happy researching!

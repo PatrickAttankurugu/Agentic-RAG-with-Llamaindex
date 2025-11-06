@@ -23,7 +23,7 @@ logger = get_logger(__name__)
 # Page configuration
 st.set_page_config(
     page_title="Agentic RAG v2.0 - Industry Standard",
-    page_icon="🚀",
+    page_icon="📄",
     layout="wide",
     initial_sidebar_state="expanded"
 )
@@ -80,10 +80,10 @@ def create_agent(file_paths: List[str], mode: str):
         with st.spinner(f"Creating {mode} agent with {len(file_paths)} documents..."):
             state = st.session_state.rag_service.create_agent(file_paths, mode)
             st.session_state.initialized = True
-            st.success(f"✅ Agent created! Documents: {state.num_documents}, Chunks: {state.num_chunks}")
+            st.success(f"Agent created! Documents: {state.num_documents}, Chunks: {state.num_chunks}")
             return True
     except Exception as e:
-        st.error(f"❌ Failed to create agent: {str(e)}")
+        st.error(f"Failed to create agent: {str(e)}")
         logger.error(f"Agent creation failed: {str(e)}")
         return False
 
@@ -115,25 +115,25 @@ def main():
     """Main application"""
 
     # Header
-    st.markdown('<p class="main-header">🚀 Agentic RAG v2.0 - Industry Standard</p>', unsafe_allow_html=True)
+    st.markdown('<p class="main-header">Agentic RAG v2.0 - Industry Standard</p>', unsafe_allow_html=True)
     st.markdown("**Production-Ready** | Persistent Storage | Caching | Monitoring | Testing")
 
     # Sidebar
     with st.sidebar:
-        st.header("⚙️ Configuration")
+        st.header("Configuration")
 
         # Initialize service
         if st.session_state.rag_service is None:
-            if st.button("🔧 Initialize Service", type="primary"):
+            if st.button("Initialize Service", type="primary"):
                 initialize_service()
 
         if st.session_state.rag_service:
-            st.success("✅ Service Initialized")
+            st.success("Service Initialized")
 
             st.divider()
 
             # Document selection
-            st.subheader("📚 Documents")
+            st.subheader("Documents")
             available_docs = st.session_state.rag_service.get_available_documents()
 
             if not available_docs:
@@ -154,7 +154,7 @@ def main():
                     help="Advanced mode uses tool retrieval for better scalability"
                 )
 
-                if st.button("🚀 Create Agent", type="primary"):
+                if st.button("Create Agent", type="primary"):
                     if selected_docs:
                         create_agent(selected_docs, mode)
                     else:
@@ -164,7 +164,7 @@ def main():
 
             # Metrics
             if st.session_state.initialized:
-                st.subheader("📊 Metrics")
+                st.subheader("Metrics")
 
                 cache_stats = st.session_state.rag_service.get_cache_stats()
                 agent_state = st.session_state.rag_service.get_agent_state()
@@ -178,21 +178,21 @@ def main():
                         st.metric("Cache Hit Rate", f"{cache_stats['hit_rate']:.2%}")
                     st.metric("Status", agent_state.status)
 
-                if st.button("🔄 Clear Cache"):
+                if st.button("Clear Cache"):
                     st.session_state.rag_service.clear_cache()
                     st.success("Cache cleared")
 
     # Main content
     if not st.session_state.initialized:
-        st.info("👈 Initialize the service and create an agent to get started!")
+        st.info("Initialize the service and create an agent to get started!")
 
         # Features
-        st.subheader("✨ New Industry-Standard Features")
+        st.subheader("New Industry-Standard Features")
         col1, col2, col3 = st.columns(3)
 
         with col1:
             st.markdown("""
-            **🏗️ Architecture**
+            **Architecture**
             - Modular design
             - Separation of concerns
             - Factory patterns
@@ -201,7 +201,7 @@ def main():
 
         with col2:
             st.markdown("""
-            **🔧 Infrastructure**
+            **Infrastructure**
             - ChromaDB persistence
             - LRU caching
             - Structured logging
@@ -210,7 +210,7 @@ def main():
 
         with col3:
             st.markdown("""
-            **🧪 Quality**
+            **Quality**
             - Comprehensive tests
             - Type hints
             - Input validation
@@ -219,14 +219,14 @@ def main():
 
     else:
         # Chat interface
-        st.subheader("💬 Chat Interface")
+        st.subheader("Chat Interface")
 
         # Display chat history
         for message in st.session_state.chat_history:
             with st.chat_message(message["role"]):
                 if message["role"] == "assistant" and "latency" in message:
                     st.write(message["content"])
-                    st.caption(f"⏱️ {message['latency']:.0f}ms")
+                    st.caption(f"{message['latency']:.0f}ms")
                 else:
                     st.write(message["content"])
 
@@ -240,12 +240,12 @@ def main():
 
             # Get response
             with st.chat_message("assistant"):
-                with st.spinner("🤔 Thinking..."):
+                with st.spinner("Thinking..."):
                     response = query_agent(query)
 
                     if response:
                         st.write(response.answer)
-                        st.caption(f"⏱️ {response.latency_ms:.0f}ms")
+                        st.caption(f"{response.latency_ms:.0f}ms")
 
                         st.session_state.chat_history.append({
                             "role": "assistant",
@@ -258,19 +258,19 @@ def main():
         col1, col2, col3 = st.columns(3)
 
         with col1:
-            if st.button("📝 Summarize Papers"):
+            if st.button("Summarize Papers"):
                 query = "Provide a comprehensive summary of all papers"
                 st.session_state.chat_history.append({"role": "user", "content": query})
                 st.rerun()
 
         with col2:
-            if st.button("🔬 Compare Methods"):
+            if st.button("Compare Methods"):
                 query = "Compare the methodologies across papers"
                 st.session_state.chat_history.append({"role": "user", "content": query})
                 st.rerun()
 
         with col3:
-            if st.button("🗑️ Clear Chat"):
+            if st.button("Clear Chat"):
                 st.session_state.chat_history = []
                 st.rerun()
 

@@ -1,24 +1,29 @@
 # Agentic RAG with LlamaIndex
 
 ## Overview
-Welcome to the Agentic RAG with LlamaIndex project! This is a production-ready application for building advanced research agents using the Agentic RAG (Retrieval-Augmented Generation) framework, powered by LlamaIndex and Google's Gemini 2.5 Flash.
 
-**🎯 Key Highlights:**
-- 🤖 Powered by **Gemini 2.5 Flash** (open-source friendly)
-- 🔍 **HuggingFace embeddings** (completely open-source)
-- 🎨 Beautiful **Streamlit** web interface
-- 📚 Multi-document analysis with intelligent routing
-- ⚡ Advanced tool retrieval for scalability
-- 🔄 End-to-end working application
+A production-ready application for building advanced research agents using Agentic RAG (Retrieval-Augmented Generation) framework, powered by LlamaIndex and Google's Gemini 2.5 Flash.
+
+### Key Highlights
+
+- Powered by Gemini 2.5 Flash (open-source friendly)
+- HuggingFace embeddings (completely open-source)
+- Beautiful Streamlit web interface
+- Multi-document analysis with intelligent routing
+- Advanced tool retrieval for scalability
+- End-to-end working application
 
 ## What is Agentic RAG?
+
 Agentic RAG is an innovative approach that combines the strengths of retrieval-based systems and generative models. This implementation enables intelligent agents that can:
-- 📖 Retrieve relevant information from multiple research papers
-- 💬 Generate coherent and contextually appropriate responses
-- 🧠 Perform complex reasoning across documents
-- 🎯 Intelligently route queries to appropriate tools
+
+- Retrieve relevant information from multiple research papers
+- Generate coherent and contextually appropriate responses
+- Perform complex reasoning across documents
+- Intelligently route queries to appropriate tools
 
 ### Key Features
+
 1. **Multi-Document Analysis**: Query across multiple research papers simultaneously
 2. **Intelligent Routing**: Automatically chooses between summarization and detailed retrieval
 3. **Tool Retrieval**: Scales efficiently with many documents (10+)
@@ -41,7 +46,7 @@ Agentic RAG is an innovative approach that combines the strengths of retrieval-b
 ├── app.py                          # Streamlit frontend application
 ├── rag_backend.py                  # Core RAG backend logic
 ├── utils.py                        # Utility functions for document processing
-├── requirements.txt                # Python dependencies
+├── requirements-new.txt            # Python dependencies
 ├── .env.example                    # Environment variable template
 ├── Multi-Document_Agent.ipynb      # Tutorial notebook
 ├── Router_Engine.ipynb             # Router tutorial notebook
@@ -65,7 +70,7 @@ python -m venv venv
 source venv/bin/activate  # On Windows: venv\Scripts\activate
 
 # Install required packages
-pip install -r requirements.txt
+pip install -r requirements-new.txt
 ```
 
 ### 3. Set Up Environment Variables
@@ -98,7 +103,7 @@ The application will open in your browser at `http://localhost:8501`
 1. **Initialize the Agent**:
    - Select PDF documents from the sidebar
    - Choose agent mode (Advanced for 5+ documents, Simple for fewer)
-   - Click "🚀 Initialize Agent"
+   - Click "Initialize Agent"
 
 2. **Ask Questions**:
    - Type your question in the chat input
@@ -131,18 +136,21 @@ print(response)
 ## Advanced Features
 
 ### Simple Agent Mode
+
 - Best for: 3-5 documents
 - Loads all tools upfront
 - Faster initialization
 - Direct tool access
 
 ### Advanced Agent Mode
+
 - Best for: 5+ documents
 - Uses tool retrieval
 - Scales to many documents
 - Intelligent tool selection
 
 ### Router Engine
+
 For single-document analysis with automatic routing between summary and vector search:
 
 ```python
@@ -152,6 +160,38 @@ backend = RAGBackend()
 router = backend.create_router_engine("metagpt.pdf")
 response = router.query("What is the main contribution?")
 ```
+
+## Industry-Standard v2.0 Features
+
+### Architecture Improvements
+
+- Modular design with clean separation of concerns
+- Factory, Singleton, and Strategy design patterns
+- SOLID principles throughout
+- Complete type hints with Pydantic validation
+
+### Infrastructure Enhancements
+
+- Persistent storage with ChromaDB (no data loss on restart)
+- LRU caching with TTL for instant responses
+- Structured JSON logging for production debugging
+- Comprehensive error handling with retry logic
+
+### Quality & Reliability
+
+- Unit and integration tests with pytest
+- Pydantic models for type-safe data
+- Input sanitization and validation
+- Built-in metrics and performance tracking
+
+### Production Ready
+
+- Docker support with Docker Compose
+- Health checks and monitoring
+- Configuration management with Pydantic
+- Horizontal scaling support
+
+For more details on v2.0 features, see the [Architecture Documentation](docs/ARCHITECTURE.md).
 
 ## Jupyter Notebooks
 
@@ -189,16 +229,19 @@ self.embed_model = HuggingFaceEmbedding(
 ## Troubleshooting
 
 ### API Key Issues
+
 - Ensure your `.env` file is in the project root
 - Verify your Google API key is valid
 - Check you haven't exceeded API quotas
 
 ### Installation Issues
+
 - Use Python 3.9 or higher
 - Try `pip install --upgrade pip` before installing requirements
 - On Mac/Linux, you may need to install system dependencies for sentence-transformers
 
 ### Memory Issues
+
 - For large PDFs, reduce chunk_size in Settings
 - Use Advanced mode for many documents
 - Process fewer documents at once
@@ -219,7 +262,7 @@ This project is based on the DeepLearning.AI course materials and extended with 
 
 ## Contact
 
-For questions or inquiries, please email: [patricka.azuma@gmail.com]
+For questions or inquiries, please email: patricka.azuma@gmail.com
 
 ## Acknowledgments
 
