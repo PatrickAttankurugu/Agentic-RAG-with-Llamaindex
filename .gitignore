@@ -48,6 +48,16 @@ Thumbs.db
 *.log
 venv/installed.flag
 
+# Data and documents
+*.pdf
+data/
+logs/
+
 # Model cache
 .cache/
 models/
+
+# Coverage
+htmlcov/
+.coverage
+coverage.xml

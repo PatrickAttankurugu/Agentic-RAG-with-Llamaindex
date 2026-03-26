@@ -13,8 +13,9 @@ from llama_index.core.agent import FunctionCallingAgentWorker, AgentRunner
 from llama_index.core.objects import ObjectIndex
 from llama_index.core.tools import FunctionTool, QueryEngineTool
 from llama_index.core.vector_stores import MetadataFilters, FilterCondition
-from llama_index.llms.gemini import Gemini
 from llama_index.embeddings.huggingface import HuggingFaceEmbedding
+
+from src.core.llm_factory import create_llm
 
 from src.core.document_processor import DocumentProcessor
 from src.core.vector_store import VectorStoreManager
@@ -87,16 +88,14 @@ class RAGService:
             )
 
     def _initialize_llm(self):
-        """Initialize LLM"""
+        """Initialize LLM via the provider factory"""
         try:
-            self.llm = Gemini(
-                model=self.settings.llm.model_name,
-                api_key=self.settings.google_api_key,
-                temperature=self.settings.llm.temperature,
-                max_tokens=self.settings.llm.max_tokens,
-                timeout=self.settings.llm.timeout
-            )
-            logger.info(f"LLM initialized: {self.settings.llm.model_name}")
+            api_key = self.settings.google_api_key
+            if self.settings.llm.provider == "openai" and self.settings.openai_api_key:
+                api_key = self.settings.openai_api_key
+
+            self.llm = create_llm(self.settings.llm, api_key)
+            logger.info(f"LLM initialized: {self.settings.llm.provider}/{self.settings.llm.model_name}")
         except Exception as e:
             logger.error(f"Failed to initialize LLM: {str(e)}")
             raise
@@ -148,17 +147,20 @@ class RAGService:
 
     def get_available_documents(self, docs_dir: Optional[str] = None) -> List[str]:
         """
-        Get list of available PDF documents
+        Get list of available documents matching supported extensions.
 
         Args:
             docs_dir: Directory to search (uses settings if None)
 
         Returns:
-            List of PDF filenames
+            List of matching filenames
         """
         directory = Path(docs_dir or self.settings.docs_dir)
-        pdf_files = list(directory.glob("*.pdf"))
-        return sorted([pdf.name for pdf in pdf_files])
+        extensions = self.settings.document.supported_extensions
+        files = []
+        for ext in extensions:
+            files.extend(directory.glob(f"*{ext}"))
+        return sorted([f.name for f in files])
 
     def _create_doc_tools(
         self,

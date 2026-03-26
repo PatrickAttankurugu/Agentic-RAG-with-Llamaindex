@@ -271,7 +271,9 @@ def with_circuit_breaker(circuit_breaker: CircuitBreaker):
 
 def timeout(seconds: int):
     """
-    Decorator to add timeout to function
+    Decorator to add timeout to function.
+
+    Uses signal.SIGALRM on Unix and a threading.Timer fallback on Windows.
 
     Args:
         seconds: Timeout in seconds
@@ -279,27 +281,57 @@ def timeout(seconds: int):
     Returns:
         Decorated function
     """
+    import platform
+
     def decorator(func: Callable) -> Callable:
-        @functools.wraps(func)
-        def wrapper(*args, **kwargs) -> Any:
-            import signal
+        if platform.system() != "Windows":
+            @functools.wraps(func)
+            def unix_wrapper(*args, **kwargs) -> Any:
+                import signal
 
-            def timeout_handler(signum, frame):
-                raise LLMTimeoutError(
-                    f"Function {func.__name__} timed out after {seconds}s"
-                )
+                def timeout_handler(signum, frame):
+                    raise LLMTimeoutError(
+                        f"Function {func.__name__} timed out after {seconds}s"
+                    )
 
-            # Set the timeout handler
-            old_handler = signal.signal(signal.SIGALRM, timeout_handler)
-            signal.alarm(seconds)
+                old_handler = signal.signal(signal.SIGALRM, timeout_handler)
+                signal.alarm(seconds)
 
-            try:
-                result = func(*args, **kwargs)
-            finally:
-                # Restore the old handler and disable alarm
-                signal.alarm(0)
-                signal.signal(signal.SIGALRM, old_handler)
+                try:
+                    result = func(*args, **kwargs)
+                finally:
+                    signal.alarm(0)
+                    signal.signal(signal.SIGALRM, old_handler)
 
-            return result
-        return wrapper
+                return result
+            return unix_wrapper
+        else:
+            @functools.wraps(func)
+            def windows_wrapper(*args, **kwargs) -> Any:
+                import threading
+                import ctypes
+
+                result = [None]
+                exception = [None]
+
+                def target():
+                    try:
+                        result[0] = func(*args, **kwargs)
+                    except Exception as e:
+                        exception[0] = e
+
+                thread = threading.Thread(target=target, daemon=True)
+                thread.start()
+                thread.join(timeout=seconds)
+
+                if thread.is_alive():
+                    raise LLMTimeoutError(
+                        f"Function {func.__name__} timed out after {seconds}s"
+                    )
+
+                if exception[0] is not None:
+                    raise exception[0]
+
+                return result[0]
+            return windows_wrapper
     return decorator

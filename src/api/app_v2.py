@@ -4,12 +4,7 @@ Production-ready UI with proper error handling and monitoring
 """
 
 import streamlit as st
-import sys
-from pathlib import Path
 from typing import List
-
-# Add src to path
-sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
 from config.settings import get_settings
 from src.services.rag_service import RAGService

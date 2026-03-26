@@ -1,0 +1,104 @@
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "agentic-rag"
+version = "2.0.0"
+description = "Production-ready Agentic RAG with LlamaIndex and Gemini"
+readme = "README.md"
+license = {text = "MIT"}
+requires-python = ">=3.9"
+authors = [
+    {name = "Patrick Attankurugu", email = "patricka.azuma@gmail.com"},
+]
+keywords = ["rag", "llamaindex", "gemini", "ai-agents", "retrieval-augmented-generation"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+dependencies = [
+    "python-dotenv>=1.0.0",
+    "llama-index>=0.10.27",
+    "llama-index-core>=0.10.27",
+    "llama-index-llms-gemini>=0.1.8",
+    "google-generativeai>=0.3.2",
+    "llama-index-embeddings-huggingface>=0.1.4",
+    "sentence-transformers>=2.3.1",
+    "chromadb>=0.4.22",
+    "llama-index-vector-stores-chroma>=0.1.4",
+    "pydantic>=2.5.3",
+    "pydantic-settings>=2.1.0",
+    "loguru>=0.7.2",
+    "streamlit>=1.31.0",
+    "pypdf>=4.0.1",
+    "nest-asyncio>=1.6.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.4.3",
+    "pytest-asyncio>=0.21.1",
+    "pytest-cov>=4.1.0",
+    "ruff>=0.4.0",
+    "mypy>=1.8.0",
+    "pre-commit>=3.6.0",
+]
+api = [
+    "fastapi>=0.109.0",
+    "uvicorn>=0.27.0",
+]
+openai = [
+    "llama-index-llms-openai>=0.1.0",
+    "openai>=1.7.0",
+]
+anthropic = [
+    "llama-index-llms-anthropic>=0.1.0",
+    "anthropic>=0.8.0",
+]
+docs = [
+    "mkdocs-material>=9.5.0",
+]
+all = [
+    "agentic-rag[dev,api,openai,anthropic,docs]",
+]
+
+[project.urls]
+Homepage = "https://github.com/PatrickAttankurugu/Agentic-RAG-with-LlamaIndex"
+Issues = "https://github.com/PatrickAttankurugu/Agentic-RAG-with-LlamaIndex/issues"
+
+[tool.setuptools.packages.find]
+include = ["src*", "config*"]
+
+[tool.ruff]
+target-version = "py39"
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "W"]
+ignore = ["E501"]
+
+[tool.mypy]
+python_version = "3.9"
+warn_return_any = true
+warn_unused_configs = true
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = "-v --tb=short --strict-markers"
+markers = [
+    "unit: Unit tests",
+    "integration: Integration tests",
+    "slow: Slow tests",
+]

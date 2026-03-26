@@ -3,6 +3,7 @@ Caching Layer for RAG System
 LRU cache with TTL support
 """
 
+import threading
 from typing import Any, Optional, Dict, Callable
 from collections import OrderedDict
 from datetime import datetime, timedelta
@@ -18,7 +19,7 @@ logger = get_logger(__name__)
 
 
 class LRUCache:
-    """LRU (Least Recently Used) Cache with TTL support"""
+    """Thread-safe LRU (Least Recently Used) Cache with TTL support"""
 
     def __init__(self, max_size: int = 1000, ttl: int = 3600):
         """
@@ -30,6 +31,7 @@ class LRUCache:
         """
         self.max_size = max_size
         self.ttl = ttl
+        self._lock = threading.Lock()
         self._cache: OrderedDict[str, CacheEntry] = OrderedDict()
         self._hits = 0
         self._misses = 0
@@ -49,28 +51,29 @@ class LRUCache:
         Returns:
             Cached value or None if not found/expired
         """
-        if key not in self._cache:
-            self._misses += 1
-            return None
+        with self._lock:
+            if key not in self._cache:
+                self._misses += 1
+                return None
 
-        entry = self._cache[key]
+            entry = self._cache[key]
 
-        # Check if expired
-        if entry.is_expired():
-            del self._cache[key]
-            self._misses += 1
-            logger.debug(f"Cache expired: {key}")
-            return None
+            # Check if expired
+            if entry.is_expired():
+                del self._cache[key]
+                self._misses += 1
+                logger.debug(f"Cache expired: {key}")
+                return None
 
-        # Move to end (most recently used)
-        self._cache.move_to_end(key)
+            # Move to end (most recently used)
+            self._cache.move_to_end(key)
 
-        # Update access info
-        entry.accessed_at = datetime.utcnow()
-        entry.access_count += 1
+            # Update access info
+            entry.accessed_at = datetime.utcnow()
+            entry.access_count += 1
 
-        self._hits += 1
-        return entry.value
+            self._hits += 1
+            return entry.value
 
     def set(self, key: str, value: Any) -> None:
         """
@@ -80,24 +83,25 @@ class LRUCache:
             key: Cache key
             value: Value to cache
         """
-        # Create cache entry
-        entry = CacheEntry(
-            key=key,
-            value=value,
-            ttl=self.ttl
-        )
+        with self._lock:
+            # Create cache entry
+            entry = CacheEntry(
+                key=key,
+                value=value,
+                ttl=self.ttl
+            )
 
-        # Remove if already exists
-        if key in self._cache:
-            del self._cache[key]
+            # Remove if already exists
+            if key in self._cache:
+                del self._cache[key]
 
-        # Add to cache
-        self._cache[key] = entry
+            # Add to cache
+            self._cache[key] = entry
 
-        # Evict least recently used if over max size
-        if len(self._cache) > self.max_size:
-            evicted_key, _ = self._cache.popitem(last=False)
-            logger.debug(f"Cache eviction: {evicted_key}")
+            # Evict least recently used if over max size
+            if len(self._cache) > self.max_size:
+                evicted_key, _ = self._cache.popitem(last=False)
+                logger.debug(f"Cache eviction: {evicted_key}")
 
     def delete(self, key: str) -> bool:
         """
@@ -109,16 +113,18 @@ class LRUCache:
         Returns:
             True if deleted, False if not found
         """
-        if key in self._cache:
-            del self._cache[key]
-            return True
-        return False
+        with self._lock:
+            if key in self._cache:
+                del self._cache[key]
+                return True
+            return False
 
     def clear(self) -> None:
         """Clear all cache entries"""
-        self._cache.clear()
-        self._hits = 0
-        self._misses = 0
+        with self._lock:
+            self._cache.clear()
+            self._hits = 0
+            self._misses = 0
         logger.info("Cache cleared")
 
     def get_stats(self) -> Dict[str, Any]:
@@ -128,23 +134,26 @@ class LRUCache:
         Returns:
             Dictionary of cache stats
         """
-        total_requests = self._hits + self._misses
-        hit_rate = self._hits / total_requests if total_requests > 0 else 0
+        with self._lock:
+            total_requests = self._hits + self._misses
+            hit_rate = self._hits / total_requests if total_requests > 0 else 0
 
-        return {
-            "size": len(self._cache),
-            "max_size": self.max_size,
-            "hits": self._hits,
-            "misses": self._misses,
-            "hit_rate": hit_rate,
-            "total_requests": total_requests
-        }
+            return {
+                "size": len(self._cache),
+                "max_size": self.max_size,
+                "hits": self._hits,
+                "misses": self._misses,
+                "hit_rate": hit_rate,
+                "total_requests": total_requests,
+            }
 
     def __len__(self) -> int:
-        return len(self._cache)
+        with self._lock:
+            return len(self._cache)
 
     def __contains__(self, key: str) -> bool:
-        return key in self._cache
+        with self._lock:
+            return key in self._cache
 
 
 class QueryCache:
@@ -235,12 +244,12 @@ class QueryCache:
 
     def clear(self) -> None:
         """Clear cache"""
-        if self.cache:
+        if self.cache is not None:
             self.cache.clear()
 
     def get_stats(self) -> Dict[str, Any]:
         """Get cache statistics"""
-        if self.cache:
+        if self.cache is not None:
             return self.cache.get_stats()
         return {
             "enabled": False

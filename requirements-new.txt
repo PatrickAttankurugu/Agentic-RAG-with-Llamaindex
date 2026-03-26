@@ -1,3 +1,9 @@
+# DEPRECATED: Use pyproject.toml instead.
+# Install with: pip install -e .
+# Install with dev deps: pip install -e ".[dev]"
+#
+# This file is kept for backward compatibility only.
+#
 # Agentic RAG - Industry Standard Requirements
 # Python 3.9+ required
 

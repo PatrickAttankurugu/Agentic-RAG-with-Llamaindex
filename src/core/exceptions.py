@@ -62,22 +62,22 @@ class DocumentParseError(DocumentError):
 
 
 # Index Errors
-class IndexError(RAGException):
+class RAGIndexError(RAGException):
     """Base exception for index-related errors"""
     pass
 
 
-class IndexCreationError(IndexError):
+class IndexCreationError(RAGIndexError):
     """Raised when index creation fails"""
     pass
 
 
-class IndexLoadError(IndexError):
+class IndexLoadError(RAGIndexError):
     """Raised when index loading fails"""
     pass
 
 
-class IndexPersistError(IndexError):
+class IndexPersistError(RAGIndexError):
     """Raised when index persistence fails"""
     pass
 

@@ -44,6 +44,14 @@ class VectorStoreConfig(BaseSettings):
     distance_metric: Literal["cosine", "l2", "ip"] = "cosine"
 
 
+class DocumentConfig(BaseSettings):
+    """Document Processing Configuration"""
+
+    model_config = ConfigDict(env_prefix='DOCUMENT_')
+
+    supported_extensions: List[str] = [".pdf", ".txt", ".md", ".docx"]
+
+
 class ChunkingConfig(BaseSettings):
     """Document Chunking Configuration"""
 
@@ -140,7 +148,8 @@ class Settings(BaseSettings):
         env_file='.env',
         env_file_encoding='utf-8',
         case_sensitive=False,
-        extra='ignore'
+        extra='ignore',
+        populate_by_name=True,
     )
 
     # API Keys
@@ -164,6 +173,7 @@ class Settings(BaseSettings):
     llm: LLMConfig = Field(default_factory=LLMConfig)
     embedding: EmbeddingConfig = Field(default_factory=EmbeddingConfig)
     vector_store: VectorStoreConfig = Field(default_factory=VectorStoreConfig)
+    document: DocumentConfig = Field(default_factory=DocumentConfig)
     chunking: ChunkingConfig = Field(default_factory=ChunkingConfig)
     retrieval: RetrievalConfig = Field(default_factory=RetrievalConfig)
     agent: AgentConfig = Field(default_factory=AgentConfig)
@@ -190,9 +200,6 @@ class Settings(BaseSettings):
                 "https://makersuite.google.com/app/apikey"
             )
         return v
-
-    class Config:
-        validate_assignment = True
 
 
 # Singleton instance
@@ -228,9 +235,10 @@ def get_test_settings(**overrides) -> Settings:
     Returns:
         Settings instance with overrides
     """
-    return Settings(
-        google_api_key=overrides.get('google_api_key', 'test_key'),
-        environment='development',
-        debug=True,
-        **overrides
-    )
+    defaults = {
+        "google_api_key": "test_key",
+        "environment": "development",
+        "debug": True,
+    }
+    defaults.update(overrides)
+    return Settings(**defaults)

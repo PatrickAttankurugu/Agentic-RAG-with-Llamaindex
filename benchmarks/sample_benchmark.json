@@ -1,0 +1,29 @@
+{
+  "cases": [
+    {
+      "question": "What is the main contribution of the MetaGPT paper?",
+      "expected_keywords": ["meta", "gpt", "agent", "software", "development"],
+      "category": "summarization"
+    },
+    {
+      "question": "What evaluation datasets are used in the papers?",
+      "expected_keywords": ["dataset", "benchmark", "evaluation"],
+      "category": "extraction"
+    },
+    {
+      "question": "Compare the methodologies described across the papers.",
+      "expected_keywords": ["methodology", "approach", "method", "compare"],
+      "category": "comparison"
+    },
+    {
+      "question": "What are the limitations mentioned in the papers?",
+      "expected_keywords": ["limitation", "challenge", "future"],
+      "category": "analysis"
+    },
+    {
+      "question": "Summarize the key findings of all papers.",
+      "expected_keywords": ["finding", "result", "contribution"],
+      "category": "summarization"
+    }
+  ]
+}
